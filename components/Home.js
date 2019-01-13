@@ -32,9 +32,9 @@ var flag = 1;
 export default class Main extends React.Component {
 
   static navigationOptions = {
-    title:'Contacts',
+    title:'Contacts App',
   }
-  
+
   
   constructor(props){
     super(props);
@@ -89,7 +89,7 @@ export default class Main extends React.Component {
     }
  
   render() {
-
+    console.log('%c Hello from Saravanan','color:green')
     let contact = this.state.noteArray.map((val,key) => {
       return (
       <Contact 

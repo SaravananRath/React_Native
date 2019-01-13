@@ -10,7 +10,6 @@ import ImagePickerProject from './components/Photo.js';
 import Broadcast from './components/Broadcast.js'
 
 
-
 const RootStack = StackNavigator(
 {
   
