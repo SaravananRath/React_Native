@@ -1,4 +1,4 @@
-package com.mobilenative4;
+package com.people;
 
 import android.app.Application;
 
