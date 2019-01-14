@@ -29,16 +29,17 @@ export default class Main extends React.Component {
   static navigationOptions = {
     title: 'Contacts App'
   }
-
+  componentDidMount() {}
   constructor(props) {
     super(props)
     this.state = {
-      noteArray: [this.getData()],
+      noteArray: [this.getContacts()],
       name: '',
       number: '',
       id: this.getIdIndex(),
       valid: true,
-      ImageSource: null
+      ImageSource: null,
+      user: []
     }
     this.returnData = this.returnData.bind(this)
   }
@@ -78,13 +79,12 @@ export default class Main extends React.Component {
   }
 
   render() {
-    console.log('%c Hello from Saravanan', 'color:green')
-    let contact = this.state.noteArray.map((val, key) => {
+    let contact = this.state.user.map(({ userData }, key) => {
       return (
         <Contact
           key={key}
           keyval={key}
-          val={val}
+          val={userData}
           deleteMethod={() => this.deleteContact(key)}
           editMethod={() => this.updateContact(key)}
           edit={this.state.edit}
@@ -208,7 +208,7 @@ export default class Main extends React.Component {
               break
             }
           }
-          this.getData()
+          this.getContacts()
         })
       })
     } catch (error) {
@@ -243,7 +243,7 @@ export default class Main extends React.Component {
       }
       if (flag === 1) {
         AsyncStorage.setItem(newUser, JSON.stringify(obj))
-        this.getData()
+        this.getContacts()
         // SmsAndroid.sms(
         //   this.state.number, // phone number to send sms to
         //   'Your Contact Added By Saravanan', // sms body
@@ -289,6 +289,44 @@ export default class Main extends React.Component {
     }
   }
 
+  getUserIds = async () => {
+    try {
+      let userIds = await AsyncStorage.getAllKeys((err, key) => {
+        if (err) console.log(err)
+        return key
+      })
+      return userIds
+    } catch (error) {
+      console.error
+    }
+  }
+
+  getContacts = async () => {
+    try {
+      let keys = await this.getUserIds()
+      obj2 = []
+      AsyncStorage.multiGet(keys, (err, cb) => {
+        let arr = cb.map((result, i, user) => {
+          let userId = user[i][0]
+          let userData = JSON.parse(user[i][1])
+          return {
+            userId,
+            userData
+          }
+        })
+        this.setState({ user: arr }, () => console.log(this.state.user))
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+  deleteContact(i) {
+    const { user } = this.state
+    var userId = user[i].userId
+    user.splice(i, 1)
+    AsyncStorage.removeItem(userId)
+    this.setState({ user })
+  }
   checkData = async () => {
     try {
       AsyncStorage.getAllKeys((err, keys) => {
@@ -306,63 +344,33 @@ export default class Main extends React.Component {
     }
   }
 
-  getData = async () => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj2 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            var str = key
-            var result = str.match(/user/g)
-            if (result) {
-              obj2.push(JSON.parse(store[i][1]))
-            }
-          })
-          // console.log(stores);
-          // console.log(obj2);1
-          this.setState({ noteArray: obj2 })
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
-  }
+  // removeData = async (num, nam) => {
+  //   try {
+  //     AsyncStorage.getAllKeys((err, keys) => {
+  //       obj2 = []
+  //       AsyncStorage.multiGet(keys, (err, stores) => {
+  //         // console.log(keys);
+  //         stores.map((result, i, store) => {
+  //           let key = store[i][0]
+  //           let value = store[i][1]
+  //           obj2.push(JSON.parse(store[i][1]))
+  //         })
 
-  deleteContact(key) {
-    var number = this.state.noteArray[key].number
-    var user = this.state.noteArray[key].name
-    this.removeData(number, user)
-  }
-
-  removeData = async (num, nam) => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj2 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          // console.log(keys);
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            obj2.push(JSON.parse(store[i][1]))
-          })
-
-          for (i = 0; i < obj2.length; i++) {
-            if (num === obj2[i].number && nam === obj2[i].name) {
-              AsyncStorage.removeItem('user' + obj2[i].id)
-              obj2.splice(i, 1)
-              break
-            }
-          }
-          // console.log("Stored Value : "+stores);
-          this.setState({ noteArray: obj2 })
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
-  }
+  //         for (i = 0; i < obj2.length; i++) {
+  //           if (num === obj2[i].number && nam === obj2[i].name) {
+  //             AsyncStorage.removeItem('user' + obj2[i].id)
+  //             obj2.splice(i, 1)
+  //             break
+  //           }
+  //         }
+  //         // console.log("Stored Value : "+stores);
+  //         this.setState({ noteArray: obj2 })
+  //       })
+  //     })
+  //   } catch (error) {
+  //     alert(error)
+  //   }
+  // }
 
   clearStorage = () => {
     AsyncStorage.clear()
