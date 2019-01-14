@@ -1,3 +1,5 @@
+__tests__/
+
 # OSX
 #
 .DS_Store
@@ -51,3 +53,4 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+
