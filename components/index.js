@@ -1,5 +1,5 @@
 import Home from './Home'
-import About from './About'
+import EditContact from './EditContact'
 import Broadcast from './Broadcast'
 
-export { Home, About, Broadcast }
+export { Home, EditContact, Broadcast }

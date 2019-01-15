@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import ImagePicker from 'react-native-image-picker'
 
-export default class About extends React.Component {
+export default class EditContact extends React.Component {
   static navigationOptions = {
     title: 'Edit Contact'
   }
@@ -58,7 +58,9 @@ export default class About extends React.Component {
     const name0 = params ? params.name : null
     const number0 = params ? params.number : null
     const image0 = params ? params.image : null
-    const key = params ? params.key : null
+    const index = params ? params.index : null
+    const { name, number, ImageSource } = this.state
+
     // this.state(name0,number0);
 
     return (
@@ -88,13 +90,10 @@ export default class About extends React.Component {
           <View style={styles.photo}>
             <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
               <View style={styles.ImageContainer}>
-                {this.state.ImageSource === null ? (
+                {ImageSource === null ? (
                   <Image style={styles.ImageContainer} source={image0} />
                 ) : (
-                  <Image
-                    style={styles.ImageContainer}
-                    source={this.state.ImageSource}
-                  />
+                  <Image style={styles.ImageContainer} source={ImageSource} />
                 )}
               </View>
             </TouchableOpacity>
@@ -107,13 +106,10 @@ export default class About extends React.Component {
             title="Save"
             onPress={() =>
               params.returnData(
-                this.state.name === '' ? name0 : this.state.name,
-                this.state.number === '' ? number0 : this.state.number,
-                number0,
-                name0,
-                this.state.ImageSource === null
-                  ? image0
-                  : this.state.ImageSource
+                name === '' ? name0 : name,
+                number === '' ? number0 : number,
+                this.state.ImageSource === null ? image0 : ImageSource,
+                index
               )
             }
           />
@@ -129,11 +125,6 @@ export default class About extends React.Component {
       </View>
     )
   }
-  // changeState = (name,number) =>{
-
-  //   this.setState({name:name});
-  //   this.setState({number:number});
-  // }
 }
 
 const styles = StyleSheet.create({
@@ -181,39 +172,3 @@ const styles = StyleSheet.create({
     marginLeft: 10
   }
 })
-// import React from 'react';
-// import { StyleSheet, Text, View ,Button} from 'react-native';
-
-// export default class About extends React.Component {
-
-//     static navigationOptions = {
-//     title:'About',
-//   }
-//   render() {
-//     const {  params } = this.props.navigation.state;
-//     const itemId = params ? params.itemId : null;
-//     const name = params ? params.name : null;
-
-//     return (
-//       <View style={styles.container}>
-//           <Text>About Page!</Text>
-//           <Text>Item Id:{JSON.stringify(itemId)}</Text>
-//           <Text>Name:{JSON.stringify(name)}</Text>
-
-//         <Button
-//         title="Go Back"
-//         onPress={()=>this.props.navigation.goBack()}
-//         />
-//       </View>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#ddd',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { StackNavigator } from 'react-navigation'
-import { Home, About, Broadcast } from './components'
+import { Home, EditContact, Broadcast } from './components'
 
 const RootStack = StackNavigator(
   {
     Home: {
       screen: Home
     },
-    About: {
-      screen: About
+    EditContact: {
+      screen: EditContact
     },
     Broadcast: {
       screen: Broadcast

@@ -19,7 +19,6 @@ import Contact from './Contact.js'
 import ImagePicker from 'react-native-image-picker'
 var SmsAndroid = require('react-native-sms-android')
 var obj = []
-var obj1 = []
 var obj2 = []
 var obj3 = []
 var obj7 = []
@@ -29,20 +28,22 @@ export default class Main extends React.Component {
   static navigationOptions = {
     title: 'Contacts App'
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.getContacts()
+    this.getIdIndex()
+  }
   constructor(props) {
     super(props)
     this.state = {
-      noteArray: [this.getContacts()],
       name: '',
       number: '',
-      id: this.getIdIndex(),
+      id: 0,
       valid: true,
       ImageSource: null,
-      user: []
+      users: []
     }
-    this.returnData = this.returnData.bind(this)
   }
+
   // sendSMSFunction() {
   //   SendSMS.send(this.state.number, "Your contact has been added by Saravanan",
   //     (msg)=>{
@@ -50,6 +51,7 @@ export default class Main extends React.Component {
   //     }
   //   );
   // }
+
   selectPhotoTapped() {
     const options = {
       quality: 1.0,
@@ -79,7 +81,7 @@ export default class Main extends React.Component {
   }
 
   render() {
-    let contact = this.state.user.map(({ userData }, key) => {
+    let contact = this.state.users.map(({ userData }, key) => {
       return (
         <Contact
           key={key}
@@ -161,61 +163,6 @@ export default class Main extends React.Component {
     )
   }
 
-  returnData = (n, no, oldNo, oldn, img) => {
-    // console.log('name : '+n);
-    // console.log('number : '+no);
-    this.updateData(n, no, oldNo, oldn, img)
-
-    // console.log('Number : '+JSON.stringify(n));j
-
-    // var obj={
-    //   'name':n,
-    //   'number':no,
-    // }
-    // this.setState({'noteArray':obj})
-  }
-
-  updateData = async (nam, num, oldNum, oldNam, img) => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj2 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          // console.log(keys);
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            obj2.push(JSON.parse(store[i][1]))
-          })
-
-          console.log('inUpdateData Name : ' + nam)
-          console.log('inUpdateData Number : ' + num)
-          console.log('inUpdateData OldNumber : ' + oldNum)
-
-          for (i = 0; i < obj2.length; i++) {
-            if (oldNum === obj2[i].number && oldNam === obj2[i].name) {
-              var obj5 = {
-                id: obj2[i].id,
-                name: nam,
-                number: num,
-                image: img
-              }
-              // console.log("id : "+obj2[i].id);
-              console.log('Obj5 id: ' + obj5.id)
-              console.log('Obj5 id: ' + obj5.name)
-              console.log('Obj5 id: ' + obj5.number)
-
-              AsyncStorage.setItem('user' + obj5.id, JSON.stringify(obj5))
-              break
-            }
-          }
-          this.getContacts()
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
-  }
-
   addContact = () => {
     if (
       this.state.name &&
@@ -259,7 +206,7 @@ export default class Main extends React.Component {
         this.setState({ name: '' })
         this.setState({ number: '' })
         this.setState({ ImageSource: null })
-        this.setState({ id: this.state.id + 1 })
+        this.setState({ id: this.state.id })
 
         // this.sendSMSFunction();
       }
@@ -268,25 +215,11 @@ export default class Main extends React.Component {
     }
   }
   getIdIndex = async () => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj3 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            obj3.push(JSON.parse(store[i][1]))
-          })
-          if (obj3.length != 0) {
-            this.setState({ id: obj3[obj3.length - 1].id + 1 })
-          } else {
-            this.setState({ id: 0 })
-          }
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
+    const state = this.state
+    let ids = await this.getUserIds()
+    let num = parseInt(ids[ids.length - 1].toString().substring(4)) || 0
+    state[id] = num
+    this.setState({ state })
   }
 
   getUserIds = async () => {
@@ -314,19 +247,51 @@ export default class Main extends React.Component {
             userData
           }
         })
-        this.setState({ user: arr }, () => console.log(this.state.user))
+        this.setState({ users: arr }, () => console.log(this.state.users))
       })
     } catch (error) {
       alert(error)
     }
   }
-  deleteContact(i) {
-    const { user } = this.state
-    var userId = user[i].userId
-    user.splice(i, 1)
+
+  deleteContact(index) {
+    const { users } = this.state
+    var userId = users[index].userId
+    users.splice(index, 1)
     AsyncStorage.removeItem(userId)
-    this.setState({ user })
+    this.setState({ users }, () => console.log(this.state.users))
   }
+
+  updateContact(index) {
+    const { name, number, image } = this.state.users[index].userData
+    this.props.navigation.navigate('EditContact', {
+      name,
+      number,
+      image,
+      index,
+      returnData: this.returnData
+    })
+  }
+
+  returnData = (name, number, image, index) => {
+    console.log(index)
+    const { userId, userData } = this.state.users[index]
+    userData.name = name
+    userData.number = number
+    userData.image = image
+    AsyncStorage.mergeItem(
+      userId,
+      JSON.stringify({
+        name,
+        number,
+        image
+      }),
+      () => {
+        this.setState({ userData })
+      }
+    )
+  }
+
   checkData = async () => {
     try {
       AsyncStorage.getAllKeys((err, keys) => {
@@ -344,48 +309,9 @@ export default class Main extends React.Component {
     }
   }
 
-  // removeData = async (num, nam) => {
-  //   try {
-  //     AsyncStorage.getAllKeys((err, keys) => {
-  //       obj2 = []
-  //       AsyncStorage.multiGet(keys, (err, stores) => {
-  //         // console.log(keys);
-  //         stores.map((result, i, store) => {
-  //           let key = store[i][0]
-  //           let value = store[i][1]
-  //           obj2.push(JSON.parse(store[i][1]))
-  //         })
-
-  //         for (i = 0; i < obj2.length; i++) {
-  //           if (num === obj2[i].number && nam === obj2[i].name) {
-  //             AsyncStorage.removeItem('user' + obj2[i].id)
-  //             obj2.splice(i, 1)
-  //             break
-  //           }
-  //         }
-  //         // console.log("Stored Value : "+stores);
-  //         this.setState({ noteArray: obj2 })
-  //       })
-  //     })
-  //   } catch (error) {
-  //     alert(error)
-  //   }
-  // }
-
   clearStorage = () => {
     AsyncStorage.clear()
-    this.setState({ noteArray: [] })
-  }
-
-  updateContact(key) {
-    var x = this.state.noteArray[key]
-    this.props.navigation.navigate('About', {
-      name: this.state.noteArray[key].name,
-      number: this.state.noteArray[key].number,
-      image: this.state.noteArray[key].image,
-      key: key,
-      returnData: this.returnData
-    })
+    this.setState({ user: [] })
   }
 }
 
