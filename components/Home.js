@@ -247,55 +247,46 @@ export default class Main extends React.Component {
 
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.scrollContainer}
-          keyboardShouldPersistTaps="always"
-        >
-          {contact}
-        </ScrollView>
+        <View style={styles.inputContainer}>
+          <View style={styles.textContainer}>
+            <TextInput
+              style={styles.textInput}
+              onChangeText={name => this.setState({ name })}
+              value={this.state.name}
+              placeholder="Contact Name"
+              placeholderTextColor="black"
+              underlineColorAndroid="transparent"
+            />
 
-        <View style={styles.footer}>
-          <View style={styles.inphoto}>
-            <View style={styles.ipbox}>
-              <TextInput
-                style={styles.textInput}
-                onChangeText={name => this.setState({ name })}
-                value={this.state.name}
-                placeholder="Contact Name"
-                placeholderTextColor="black"
-                underlineColorAndroid="transparent"
-              />
+            <TextInput
+              keyboardType="numeric"
+              style={styles.textInput}
+              onChangeText={number => this.setState({ number })}
+              value={this.state.number}
+              placeholder="Contact Number"
+              placeholderTextColor="black"
+              underlineColorAndroid="transparent"
+              onSubmitEditing={this.addContact}
+            />
+          </View>
 
-              <TextInput
-                keyboardType="numeric"
-                style={styles.textInput}
-                onChangeText={number => this.setState({ number })}
-                value={this.state.number}
-                placeholder="Contact Number"
-                placeholderTextColor="black"
-                underlineColorAndroid="transparent"
-                onSubmitEditing={this.addContact}
-              />
-            </View>
-
-            <View style={styles.photo}>
-              <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
-                <View style={styles.ImageContainer}>
-                  {this.state.image === null ? (
-                    <Text>Select a Photo</Text>
-                  ) : (
-                    <Image
-                      style={styles.ImageContainer}
-                      source={this.state.image}
-                    />
-                  )}
-                </View>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.photo}>
+            <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
+              <View style={styles.ImageContainer}>
+                {this.state.image === null ? (
+                  <Text>Select a Photo</Text>
+                ) : (
+                  <Image
+                    style={styles.ImageContainer}
+                    source={this.state.image}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
+        {/* <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
 
@@ -308,7 +299,14 @@ export default class Main extends React.Component {
 
         <TouchableOpacity style={styles.delButton} onPress={this.clearStorage}>
           <Text style={styles.delButtonText}>Del</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        <ScrollView
+          style={styles.scrollContainer}
+          keyboardShouldPersistTaps="always"
+        >
+          {contact}
+        </ScrollView>
       </View>
     )
   }
@@ -318,121 +316,120 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  header: {
-    // marginTop:40,
-    backgroundColor: '#3fdbac',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 5,
-    borderBottomColor: '#ddd'
+  inputContainer: {
+    flex: 0.3
+    // backgroundColor: 'green',
+    // justifyContent: 'center',
+    // marginBottom: 5
   },
-  headerText: {
-    color: 'white',
-    fontSize: 18,
-    padding: 26
+  textContainer: {
+    flexDirection: 'row',
+    flex: 7
+  },
+  photoContainer: {
+    flexDirection: 'row',
+    flex: 3
   },
   scrollContainer: {
-    flex: 1,
-    marginTop: 240,
-    borderTopWidth: 10,
-    borderTopColor: 'lightgrey'
-    // marginBottom:50
-  },
-  footer: {
-    position: 'absolute',
-    top: 10,
-    left: 0,
-    right: 0,
-    zIndex: 10
+    flex: 0.7
+    // backgroundColor: 'orange'
   },
   textInput: {
-    alignSelf: 'stretch',
+    // alignSelf: 'stretch',
     color: 'black',
-    padding: 10,
+    padding: 16,
     backgroundColor: '#fff',
-    borderBottomWidth: 2,
+    borderBottomWidth: 5,
     borderBottomColor: '#ededed'
-  },
-  addButton: {
-    position: 'absolute',
-    zIndex: 11,
-    right: 10,
-    bottom: 290,
-    backgroundColor: '#3fdbac',
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8
-  },
-  delButton: {
-    position: 'absolute',
-    zIndex: 11,
-    left: 10,
-    bottom: 290,
-    backgroundColor: 'red',
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8
-  },
-  broadButton: {
-    position: 'absolute',
-    zIndex: 11,
-    left: 130,
-    bottom: 290,
-    backgroundColor: 'skyblue',
-    // width:60,
-    height: 60,
-    // borderRadius:50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 8
-  },
-  broadButtonText: {
-    color: '#fff',
-    fontSize: 15,
-    padding: 5
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 30
-  },
+  }
+  // scrollContainer: {
+  //   flex: 1,
+  //   marginTop: 240,
+  //   borderTopWidth: 10,
+  //   borderTopColor: 'lightgrey'
+  //   // marginBottom:50
+  // },
 
-  addPhotoText: {
-    color: '#fff',
-    fontSize: 10
-  },
-  delButtonText: {
-    color: '#fff',
-    fontSize: 15
-  },
+  // addButton: {
+  //   position: 'absolute',
+  //   zIndex: 11,
+  //   right: 10,
+  //   bottom: 290,
+  //   backgroundColor: '#3fdbac',
+  //   width: 60,
+  //   height: 60,
+  //   borderRadius: 50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   elevation: 8
+  // },
+  // delButton: {
+  //   position: 'absolute',
+  //   zIndex: 11,
+  //   left: 10,
+  //   bottom: 290,
+  //   backgroundColor: 'red',
+  //   width: 60,
+  //   height: 60,
+  //   borderRadius: 50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   elevation: 8
+  // },
+  // broadButton: {
+  //   position: 'absolute',
+  //   zIndex: 11,
+  //   left: 130,
+  //   bottom: 290,
+  //   backgroundColor: 'skyblue',
+  //   // width:60,
+  //   height: 60,
+  //   // borderRadius:50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   elevation: 8
+  // },
+  // broadButtonText: {
+  //   color: '#fff',
+  //   fontSize: 15,
+  //   padding: 5
+  // },
+  // addButtonText: {
+  //   color: '#fff',
+  //   fontSize: 30
+  // },
+
+  // addPhotoText: {
+  //   color: '#fff',
+  //   fontSize: 10
+  // },
+  // delButtonText: {
+  //   color: '#fff',
+  //   fontSize: 15
+  // },
   // photo:{
   //     flex: 1,
   //     justifyContent: 'center',
   //     alignItems: 'center',
   //     backgroundColor: '#FFF8E1',
   // },
-  ImageContainer: {
-    // borderRadius: 50,
-    width: 100,
-    height: 100,
-    borderColor: 'black',
-    borderWidth: 1 / PixelRatio.get(),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff'
-  },
-  inphoto: {
-    flex: 1,
-    flexDirection: 'row'
-  },
-  ipbox: {
-    width: 230,
-    marginLeft: 10,
-    marginRight: 10
-  }
+  // ImageContainer: {
+  //   // borderRadius: 50,
+  //   width: 100,
+  //   height: 100,
+  //   borderColor: 'black',
+  //   borderWidth: 1 / PixelRatio.get(),
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: '#fff'
+  // },
+  // inphoto: {
+  //   flex: 1,
+  //   flexDirection: 'row'
+  // },
+  // ipbox: {
+  //   width: 230,
+  //   marginLeft: 10,
+  //   marginRight: 10
+  // }
 })
