@@ -64,14 +64,6 @@ export default class Main extends React.Component {
     console.log('\n')
   }
 
-  // sendSMSFunction() {
-  //   SendSMS.send(this.state.number, "Your contact has been added by Saravanan",
-  //     (msg)=>{
-  //       ToastAndroid.show(msg, ToastAndroid.SHORT);
-  //     }
-  //   );
-  // }
-
   selectPhotoTapped() {
     const options = {
       quality: 1.0,
@@ -152,18 +144,12 @@ export default class Main extends React.Component {
         image
       }
       var newUser = 'user' + this.state.id
-      this.checkData()
-
-      for (var i = 0; i < obj7.length; i++) {
-        if (obj7[i].name === obj.name && obj7[i].number === obj.number) {
-          alert('Contact Exists')
-          flag = 0
-          break
-        } else {
-          flag = 1
-        }
-      }
-      if (flag === 1) {
+      let numbers = this.state.users.reduce((a, c) => {
+        a[c.userId] = c.userData.number
+        return a
+      }, {})
+      if (Object.values(numbers).includes(number)) alert('Contact Exists')
+      else {
         AsyncStorage.setItem(newUser, JSON.stringify(obj))
         this.getContacts()
         // SmsAndroid.sms(
@@ -180,10 +166,8 @@ export default class Main extends React.Component {
         // );
         this.setState({ name: '' })
         this.setState({ number: '' })
-        this.setState({ image: null })
+        // this.setState({ image: null })
         this.setState({ id: this.state.id + 1 })
-
-        // this.sendSMSFunction();
       }
     } else {
       alert('Invalid inputs')
