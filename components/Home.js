@@ -39,9 +39,24 @@ export default class Main extends React.Component {
       number: '',
       id: 0,
       valid: true,
-      ImageSource: null,
+      image: {
+        uri:
+          'file:///storage/emulated/0/Android/data/com.people/files/Pictures/image-eccb6297-7314-449f-8249-91b4969df833.jpg'
+      },
       users: []
     }
+  }
+
+  update = (
+    key,
+    value,
+    consoleMsg = `${key} value updated`,
+    color = `color:green;font-weight:bold;`
+  ) => {
+    this.setState({ [key]: value }, () => {
+      console.log(`%c ----- ${consoleMsg} -----`, color)
+      console.log(this.state)
+    })
   }
 
   // sendSMSFunction() {
@@ -62,22 +77,185 @@ export default class Main extends React.Component {
       }
     }
     ImagePicker.showImagePicker(options, response => {
-      console.log('Response = ', response)
+      // console.log('Response = ', response)
 
       if (response.didCancel) {
-        console.log('User cancelled photo picker')
+        // console.log('User cancelled photo picker')
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error)
+        // console.log('ImagePicker Error: ', response.error)
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton)
+        // console.log('User tapped custom button: ', response.customButton)
       } else {
         let source = { uri: response.uri }
-
+        console.log({ source })
         this.setState({
-          ImageSource: source
+          image: source
         })
       }
     })
+  }
+  validate(name, number, image) {
+    if (
+      name &&
+      /^[A-Za-z\s]+$/.test(name) &&
+      (number && /^[0-9]+$/.test(number)) &&
+      image
+    )
+      return true
+    return false
+  }
+
+  getContacts = async () => {
+    try {
+      let keys = await this.getUserIds()
+      obj2 = []
+      AsyncStorage.multiGet(keys, (err, cb) => {
+        if (err) console.error
+        let arr = cb.map((result, i, user) => {
+          let userId = user[i][0]
+          let userData = JSON.parse(user[i][1])
+          return {
+            userId,
+            userData
+          }
+        })
+        this.update('users', arr)
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+  addContact = () => {
+    const { name, number, image, id } = this.state
+    if (this.validate(name, number, image)) {
+      obj = {
+        id,
+        name,
+        number,
+        image
+      }
+      var newUser = 'user' + this.state.id
+      this.checkData()
+
+      for (var i = 0; i < obj7.length; i++) {
+        if (obj7[i].name === obj.name && obj7[i].number === obj.number) {
+          alert('Contact Exists')
+          flag = 0
+          break
+        } else {
+          flag = 1
+        }
+      }
+      if (flag === 1) {
+        AsyncStorage.setItem(newUser, JSON.stringify(obj))
+        this.getContacts()
+        // SmsAndroid.sms(
+        //   this.state.number, // phone number to send sms to
+        //   'Your Contact Added By Saravanan', // sms body
+        //   'sendDirect', // sendDirect or sendIndirect
+        //   (err, message) => {
+        //     if (err){
+        //       console.log("error");
+        //     } else {
+        //       console.log(message); // callback message
+        //     }
+        //   }
+        // );
+        this.setState({ name: '' })
+        this.setState({ number: '' })
+        this.setState({ image: null })
+        this.setState({ id: this.state.id + 1 })
+
+        // this.sendSMSFunction();
+      }
+    } else {
+      alert('Invalid inputs')
+    }
+  }
+  getIdIndex = async () => {
+    try {
+      let ids = await this.getUserIds()
+      let index = ids.length
+        ? parseInt(ids[ids.length - 1].toString().substring(4))
+        : 0
+      this.update('id', index + 1)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  getUserIds = async () => {
+    try {
+      let userIds = await AsyncStorage.getAllKeys((err, key) => {
+        if (err) console.log(err)
+        return key
+      })
+      return userIds
+    } catch (error) {
+      console.error
+    }
+  }
+
+  deleteContact(index) {
+    const { users } = this.state
+    var userId = this.state.users[index].userId
+    users.splice(index, 1)
+    AsyncStorage.removeItem(userId)
+    this.update('users', users)
+  }
+
+  updateContact(index) {
+    const { name, number, image } = this.state.users[index].userData
+    this.props.navigation.navigate('EditContact', {
+      name,
+      number,
+      image,
+      index,
+      returnData: this.returnData
+    })
+  }
+
+  returnData = (name, number, image, index) => {
+    console.log(index)
+    const { userId, userData } = this.state.users[index]
+    userData.name = name
+    userData.number = number
+    userData.image = image
+    AsyncStorage.mergeItem(
+      userId,
+      JSON.stringify({
+        name,
+        number,
+        image
+      }),
+      () => {
+        this.setState({ userData })
+      }
+    )
+  }
+
+  checkData = async () => {
+    try {
+      AsyncStorage.getAllKeys((err, keys) => {
+        obj7 = []
+        AsyncStorage.multiGet(keys, (err, stores) => {
+          stores.map((result, i, store) => {
+            let key = store[i][0]
+            let value = store[i][1]
+            obj7.push(JSON.parse(store[i][1]))
+          })
+        })
+      })
+    } catch (error) {
+      alert(error)
+    }
+  }
+
+  clearStorage = () => {
+    let consoleMsg = `All users deleted`,
+      color = `color:red;font-weight:bold`
+    AsyncStorage.clear()
+    this.update('users', [], consoleMsg, color)
   }
 
   render() {
@@ -131,12 +309,12 @@ export default class Main extends React.Component {
             <View style={styles.photo}>
               <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
                 <View style={styles.ImageContainer}>
-                  {this.state.ImageSource === null ? (
+                  {this.state.image === null ? (
                     <Text>Select a Photo</Text>
                   ) : (
                     <Image
                       style={styles.ImageContainer}
-                      source={this.state.ImageSource}
+                      source={this.state.image}
                     />
                   )}
                 </View>
@@ -161,157 +339,6 @@ export default class Main extends React.Component {
         </TouchableOpacity>
       </View>
     )
-  }
-
-  addContact = () => {
-    if (
-      this.state.name &&
-      /^[A-Za-z\s]+$/.test(this.state.name) &&
-      (this.state.number && /^[0-9]+$/.test(this.state.number)) &&
-      this.state.ImageSource
-    ) {
-      obj = {
-        id: this.state.id,
-        name: this.state.name,
-        number: this.state.number,
-        image: this.state.ImageSource
-      }
-      var newUser = 'user' + this.state.id
-      this.checkData()
-
-      for (var i = 0; i < obj7.length; i++) {
-        if (obj7[i].name === obj.name && obj7[i].number === obj.number) {
-          alert('Contact Exists')
-          flag = 0
-          break
-        } else {
-          flag = 1
-        }
-      }
-      if (flag === 1) {
-        AsyncStorage.setItem(newUser, JSON.stringify(obj))
-        this.getContacts()
-        // SmsAndroid.sms(
-        //   this.state.number, // phone number to send sms to
-        //   'Your Contact Added By Saravanan', // sms body
-        //   'sendDirect', // sendDirect or sendIndirect
-        //   (err, message) => {
-        //     if (err){
-        //       console.log("error");
-        //     } else {
-        //       console.log(message); // callback message
-        //     }
-        //   }
-        // );
-        this.setState({ name: '' })
-        this.setState({ number: '' })
-        this.setState({ ImageSource: null })
-        this.setState({ id: this.state.id })
-
-        // this.sendSMSFunction();
-      }
-    } else {
-      alert('Invalid inputs')
-    }
-  }
-  getIdIndex = async () => {
-    const state = this.state
-    let ids = await this.getUserIds()
-    let num = parseInt(ids[ids.length - 1].toString().substring(4)) || 0
-    state[id] = num
-    this.setState({ state })
-  }
-
-  getUserIds = async () => {
-    try {
-      let userIds = await AsyncStorage.getAllKeys((err, key) => {
-        if (err) console.log(err)
-        return key
-      })
-      return userIds
-    } catch (error) {
-      console.error
-    }
-  }
-
-  getContacts = async () => {
-    try {
-      let keys = await this.getUserIds()
-      obj2 = []
-      AsyncStorage.multiGet(keys, (err, cb) => {
-        let arr = cb.map((result, i, user) => {
-          let userId = user[i][0]
-          let userData = JSON.parse(user[i][1])
-          return {
-            userId,
-            userData
-          }
-        })
-        this.setState({ users: arr }, () => console.log(this.state.users))
-      })
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  deleteContact(index) {
-    const { users } = this.state
-    var userId = users[index].userId
-    users.splice(index, 1)
-    AsyncStorage.removeItem(userId)
-    this.setState({ users }, () => console.log(this.state.users))
-  }
-
-  updateContact(index) {
-    const { name, number, image } = this.state.users[index].userData
-    this.props.navigation.navigate('EditContact', {
-      name,
-      number,
-      image,
-      index,
-      returnData: this.returnData
-    })
-  }
-
-  returnData = (name, number, image, index) => {
-    console.log(index)
-    const { userId, userData } = this.state.users[index]
-    userData.name = name
-    userData.number = number
-    userData.image = image
-    AsyncStorage.mergeItem(
-      userId,
-      JSON.stringify({
-        name,
-        number,
-        image
-      }),
-      () => {
-        this.setState({ userData })
-      }
-    )
-  }
-
-  checkData = async () => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj7 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            obj7.push(JSON.parse(store[i][1]))
-          })
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
-  }
-
-  clearStorage = () => {
-    AsyncStorage.clear()
-    this.setState({ user: [] })
   }
 }
 
@@ -437,36 +464,3 @@ const styles = StyleSheet.create({
     marginRight: 10
   }
 })
-// import React from 'react';
-// import { StyleSheet, Text, View ,Button} from 'react-native';
-// // import { Button } from 'native-base';
-
-// export default class Home extends React.Component {
-//   static navigationOptions = {
-//     title:'Home',
-//   }
-//   render() {
-//     return (
-//       <View style={styles.container}>
-//         <Text>Home Screen Hurray!</Text>
-//         <Button
-//           title="Go To About"
-//           onPress= {()=> this.props.navigation.navigate('About',{
-//             itemId:86,
-//             name:'Hajmola'
-//           })
-//         }
-//           />
-//       </View>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
