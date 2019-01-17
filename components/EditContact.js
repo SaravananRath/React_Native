@@ -104,22 +104,15 @@ export default class EditContact extends React.Component {
           <Button
             color="lightgreen"
             title="Save"
-            onPress={() =>
+            onPress={() => {
               params.returnData(
                 name === '' ? name0 : name,
                 number === '' ? number0 : number,
                 this.state.ImageSource === null ? image0 : ImageSource,
                 index
               )
-            }
-          />
-        </View>
-
-        <View style={styles.button2}>
-          <Button
-            title="Go Back"
-            onPress={() => this.props.navigation.goBack()}
-            color="gray"
+              this.props.navigation.goBack()
+            }}
           />
         </View>
       </View>
