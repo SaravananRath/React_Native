@@ -19,8 +19,6 @@ import Contact from './Contact.js'
 import ImagePicker from 'react-native-image-picker'
 var SmsAndroid = require('react-native-sms-android')
 var obj = []
-var obj2 = []
-var obj3 = []
 var obj7 = []
 var flag = 1
 
@@ -34,7 +32,7 @@ export default class Main extends React.Component {
   }
   constructor(props) {
     super(props)
-    this.state = {
+    ;(this.state = {
       name: '',
       number: '',
       id: 0,
@@ -44,7 +42,8 @@ export default class Main extends React.Component {
           'file:///storage/emulated/0/Android/data/com.people/files/Pictures/image-eccb6297-7314-449f-8249-91b4969df833.jpg'
       },
       users: []
-    }
+    }),
+      (this.baseState = this.state)
   }
 
   update = (
@@ -53,10 +52,16 @@ export default class Main extends React.Component {
     consoleMsg = `${key} value updated`,
     color = `color:green;font-weight:bold;`
   ) => {
+    console.log(
+      `%c ----- Previous State -----`,
+      `color:orange;font-weight:bold`
+    )
+    console.log(this.state[key])
     this.setState({ [key]: value }, () => {
       console.log(`%c ----- ${consoleMsg} -----`, color)
-      console.log(this.state)
+      console.log(this.state[key])
     })
+    console.log('\n')
   }
 
   // sendSMSFunction() {
@@ -103,6 +108,18 @@ export default class Main extends React.Component {
     )
       return true
     return false
+  }
+
+  getUserIds = async () => {
+    try {
+      let userIds = await AsyncStorage.getAllKeys((err, key) => {
+        if (err) console.log(err)
+        return key
+      })
+      return userIds
+    } catch (error) {
+      console.error
+    }
   }
 
   getContacts = async () => {
@@ -174,25 +191,14 @@ export default class Main extends React.Component {
   }
   getIdIndex = async () => {
     try {
+      let consoleMsg = `Next Id Value Fetched`
       let ids = await this.getUserIds()
       let index = ids.length
         ? parseInt(ids[ids.length - 1].toString().substring(4))
         : 0
-      this.update('id', index + 1)
+      this.update('id', index + 1, consoleMsg)
     } catch (error) {
       console.log(error)
-    }
-  }
-
-  getUserIds = async () => {
-    try {
-      let userIds = await AsyncStorage.getAllKeys((err, key) => {
-        if (err) console.log(err)
-        return key
-      })
-      return userIds
-    } catch (error) {
-      console.error
     }
   }
 
@@ -252,10 +258,13 @@ export default class Main extends React.Component {
   }
 
   clearStorage = () => {
+    const { image } = this.baseState
     let consoleMsg = `All users deleted`,
       color = `color:red;font-weight:bold`
     AsyncStorage.clear()
     this.update('users', [], consoleMsg, color)
+    this.update('state', this.baseState, `state value reset`)
+    this.update('image', image)
   }
 
   render() {
