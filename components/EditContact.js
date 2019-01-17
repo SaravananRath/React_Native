@@ -105,7 +105,7 @@ export default class EditContact extends React.Component {
             color="lightgreen"
             title="Save"
             onPress={() => {
-              params.returnData(
+              params.updateData(
                 name === '' ? name0 : name,
                 number === '' ? number0 : number,
                 this.state.ImageSource === null ? image0 : ImageSource,

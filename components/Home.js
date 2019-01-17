@@ -11,14 +11,10 @@ import {
   Image
 } from 'react-native'
 
-// import SendSMS from 'react-native-send-sms';
-
 import Contact from './Contact.js'
 import ImagePicker from 'react-native-image-picker'
 var SmsAndroid = require('react-native-sms-android')
 var obj = []
-var obj7 = []
-var flag = 1
 
 export default class Main extends React.Component {
   static navigationOptions = {
@@ -201,11 +197,11 @@ export default class Main extends React.Component {
       number,
       image,
       index,
-      returnData: this.returnData
+      updateData: this.updateData
     })
   }
 
-  returnData = (name, number, image, index) => {
+  updateData = (name, number, image, index) => {
     console.log(index)
     const { userId, userData } = this.state.users[index]
     userData.name = name
@@ -222,23 +218,6 @@ export default class Main extends React.Component {
         this.setState({ userData })
       }
     )
-  }
-
-  checkData = async () => {
-    try {
-      AsyncStorage.getAllKeys((err, keys) => {
-        obj7 = []
-        AsyncStorage.multiGet(keys, (err, stores) => {
-          stores.map((result, i, store) => {
-            let key = store[i][0]
-            let value = store[i][1]
-            obj7.push(JSON.parse(store[i][1]))
-          })
-        })
-      })
-    } catch (error) {
-      alert(error)
-    }
   }
 
   clearStorage = () => {
