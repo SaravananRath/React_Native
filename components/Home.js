@@ -8,11 +8,9 @@ import {
   TouchableOpacity,
   AsyncStorage,
   PixelRatio,
-  Image,
-  ToastAndroid
+  Image
 } from 'react-native'
 
-// import { Form, FormItem } from 'react-native-form-validation';
 // import SendSMS from 'react-native-send-sms';
 
 import Contact from './Contact.js'
@@ -46,7 +44,7 @@ export default class Main extends React.Component {
       (this.baseState = this.state)
   }
 
-  update = (
+  update = async (
     key,
     value,
     consoleMsg = `${key} value updated`,
@@ -57,7 +55,7 @@ export default class Main extends React.Component {
       `color:orange;font-weight:bold`
     )
     console.log(this.state[key])
-    this.setState({ [key]: value }, () => {
+    await this.setState({ [key]: value }, () => {
       console.log(`%c ----- ${consoleMsg} -----`, color)
       console.log(this.state[key])
     })
@@ -128,11 +126,26 @@ export default class Main extends React.Component {
             userData
           }
         })
-        this.update('users', arr)
+        this.update('users', arr, `User details Fetched`)
       })
     } catch (error) {
       alert(error)
     }
+  }
+  sendSms() {
+    const { number } = this.state
+    SmsAndroid.sms(
+      number, // phone number to send sms to
+      'Your Contact Added By Saravanan', // sms body
+      'sendDirect', // sendDirect or sendIndirect
+      (err, message) => {
+        if (err) {
+          console.log('error')
+        } else {
+          console.log(message) // callback message
+        }
+      }
+    )
   }
   addContact = () => {
     const { name, number, image, id } = this.state
@@ -151,23 +164,10 @@ export default class Main extends React.Component {
       if (Object.values(numbers).includes(number)) alert('Contact Exists')
       else {
         AsyncStorage.setItem(newUser, JSON.stringify(obj))
-        this.getContacts()
-        // SmsAndroid.sms(
-        //   this.state.number, // phone number to send sms to
-        //   'Your Contact Added By Saravanan', // sms body
-        //   'sendDirect', // sendDirect or sendIndirect
-        //   (err, message) => {
-        //     if (err){
-        //       console.log("error");
-        //     } else {
-        //       console.log(message); // callback message
-        //     }
-        //   }
-        // );
-        this.setState({ name: '' })
-        this.setState({ number: '' })
-        // this.setState({ image: null })
-        this.setState({ id: this.state.id + 1 })
+        // this.sendSms()
+        let users = [...this.state.users, { userId: newUser, userData: obj }]
+        this.update('users', users, `User added`)
+        this.setState({ name: '', number: '', id: this.state.id + 1 })
       }
     } else {
       alert('Invalid inputs')
