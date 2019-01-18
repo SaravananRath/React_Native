@@ -275,15 +275,12 @@ export default class Main extends React.Component {
               {this.state.image === null ? (
                 <Text>Select a Photo</Text>
               ) : (
-                <Image
-                  style={styles.ImageContainer}
-                  source={this.state.image}
-                />
+                <Image style={styles.imageInput} source={this.state.image} />
               )}
             </TouchableOpacity>
           </View>
         </View>
-
+        <View style={styles.buttonContainer} />
         {/* <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
@@ -316,10 +313,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue'
   },
   inputContainer: {
+    flex: 2,
     flexDirection: 'row',
-    backgroundColor: 'red'
-    // justifyContent: 'center',
-    // marginBottom: 5
+    justifyContent: 'center',
+    marginBottom: 5
   },
   textContainer: {
     flex: 0.7
@@ -329,10 +326,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ededed',
     justifyContent: 'center'
   },
-  // scrollContainer: {
-  //   flex: 0.7
-  //   // backgroundColor: 'orange'
-  // },
   textInput: {
     // alignSelf: 'stretch',
     color: 'black',
@@ -341,17 +334,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 5,
     borderBottomColor: '#ededed'
   },
-  ImageContainer: {
+  imageInput: {
     alignSelf: 'center',
     width: 100,
     height: 100,
     borderColor: 'black',
     borderWidth: 1 / PixelRatio.get(),
     backgroundColor: '#fff'
+  },
+  buttonContainer: {
+    marginTop: 5,
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'red'
   }
   // scrollContainer: {
   //   flex: 1,
-  //   marginTop: 240,
   //   borderTopWidth: 10,
   //   borderTopColor: 'lightgrey'
   //   // marginBottom:50
@@ -414,20 +412,4 @@ const styles = StyleSheet.create({
   //   color: '#fff',
   //   fontSize: 15
   // },
-  // photo:{
-  //     flex: 1,
-  //     justifyContent: 'center',
-  //     alignItems: 'center',
-  //     backgroundColor: '#FFF8E1',
-  // },
-
-  // inphoto: {
-  //   flex: 1,
-  //   flexDirection: 'row'
-  // },
-  // ipbox: {
-  //   width: 230,
-  //   marginLeft: 10,
-  //   marginRight: 10
-  // }
 })
