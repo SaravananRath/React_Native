@@ -280,8 +280,8 @@ export default class Main extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.buttonContainer} />
-        {/* <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
+        <View style={styles.buttonContainer}>
+          {/* <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
           <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
 
@@ -295,7 +295,7 @@ export default class Main extends React.Component {
         <TouchableOpacity style={styles.delButton} onPress={this.clearStorage}>
           <Text style={styles.delButtonText}>Del</Text>
         </TouchableOpacity> */}
-
+        </View>
         <ScrollView
           style={styles.scrollContainer}
           keyboardShouldPersistTaps="always"
@@ -310,50 +310,51 @@ export default class Main extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'blue'
+    backgroundColor: 'skyblue'
   },
   inputContainer: {
-    flex: 2,
+    flex: 0.3,
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 5
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
   textContainer: {
-    flex: 0.7
+    flex: 0.6,
+    backgroundColor: 'green'
   },
   photoContainer: {
     flex: 0.3,
-    backgroundColor: '#ededed',
+    backgroundColor: 'yellow',
     justifyContent: 'center'
   },
   textInput: {
     // alignSelf: 'stretch',
+    // margin:5,
     color: 'black',
-    padding: 15,
-    backgroundColor: '#fff',
-    borderBottomWidth: 5,
-    borderBottomColor: '#ededed'
+    // padding: 15,
+    backgroundColor: '#fff'
+    // borderBottomWidth: 5,
+    // borderBottomColor: 'black'
   },
   imageInput: {
-    alignSelf: 'center',
+    // alignSelf: 'center',
     width: 100,
-    height: 100,
+    height: 80,
     borderColor: 'black',
     borderWidth: 1 / PixelRatio.get(),
     backgroundColor: '#fff'
   },
   buttonContainer: {
-    marginTop: 5,
-    flex: 1,
+    flex: 0.15,
     flexDirection: 'row',
     backgroundColor: 'red'
+  },
+  scrollContainer: {
+    flex: 0.5,
+    borderTopWidth: 10,
+    borderTopColor: 'lightgrey'
+    // marginBottom:50
   }
-  // scrollContainer: {
-  //   flex: 1,
-  //   borderTopWidth: 10,
-  //   borderTopColor: 'lightgrey'
-  //   // marginBottom:50
-  // },
 
   // addButton: {
   //   position: 'absolute',
