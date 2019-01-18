@@ -270,18 +270,16 @@ export default class Main extends React.Component {
             />
           </View>
 
-          <View style={styles.photo}>
+          <View style={styles.photoContainer}>
             <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
-              <View style={styles.ImageContainer}>
-                {this.state.image === null ? (
-                  <Text>Select a Photo</Text>
-                ) : (
-                  <Image
-                    style={styles.ImageContainer}
-                    source={this.state.image}
-                  />
-                )}
-              </View>
+              {this.state.image === null ? (
+                <Text>Select a Photo</Text>
+              ) : (
+                <Image
+                  style={styles.ImageContainer}
+                  source={this.state.image}
+                />
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -314,33 +312,42 @@ export default class Main extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'blue'
   },
   inputContainer: {
-    flex: 0.3
-    // backgroundColor: 'green',
+    flexDirection: 'row',
+    backgroundColor: 'red'
     // justifyContent: 'center',
     // marginBottom: 5
   },
   textContainer: {
-    flexDirection: 'row',
-    flex: 7
+    flex: 0.7
   },
   photoContainer: {
-    flexDirection: 'row',
-    flex: 3
+    flex: 0.3,
+    backgroundColor: '#ededed',
+    justifyContent: 'center'
   },
-  scrollContainer: {
-    flex: 0.7
-    // backgroundColor: 'orange'
-  },
+  // scrollContainer: {
+  //   flex: 0.7
+  //   // backgroundColor: 'orange'
+  // },
   textInput: {
     // alignSelf: 'stretch',
     color: 'black',
-    padding: 16,
+    padding: 15,
     backgroundColor: '#fff',
     borderBottomWidth: 5,
     borderBottomColor: '#ededed'
+  },
+  ImageContainer: {
+    alignSelf: 'center',
+    width: 100,
+    height: 100,
+    borderColor: 'black',
+    borderWidth: 1 / PixelRatio.get(),
+    backgroundColor: '#fff'
   }
   // scrollContainer: {
   //   flex: 1,
@@ -413,16 +420,7 @@ const styles = StyleSheet.create({
   //     alignItems: 'center',
   //     backgroundColor: '#FFF8E1',
   // },
-  // ImageContainer: {
-  //   // borderRadius: 50,
-  //   width: 100,
-  //   height: 100,
-  //   borderColor: 'black',
-  //   borderWidth: 1 / PixelRatio.get(),
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: '#fff'
-  // },
+
   // inphoto: {
   //   flex: 1,
   //   flexDirection: 'row'
