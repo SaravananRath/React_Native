@@ -247,7 +247,7 @@ export default class Main extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.input}>
+        <View style={styles.c_r_input}>
           <View style={styles.input_text}>
             <TextInput
               style={styles.input_textStyle}
@@ -260,7 +260,7 @@ export default class Main extends React.Component {
 
             <TextInput
               keyboardType="numeric"
-              style={styles.input_textStyle}
+              style={[styles.input_textStyle, styles.input_textStyle_last]}
               onChangeText={number => this.setState({ number })}
               value={this.state.number}
               placeholder="Contact Number"
@@ -283,7 +283,7 @@ export default class Main extends React.Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.button}>
+        <View style={styles.c_r_button}>
           <TouchableOpacity
             style={styles.button_del}
             onPress={this.clearStorage}
@@ -300,11 +300,8 @@ export default class Main extends React.Component {
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.scrollView}>
-          <ScrollView keyboardShouldPersistTaps="always">
-            <Text style={{ fontSize: 100 }}>Scroll me plz</Text>
-            <Text style={{ fontSize: 100 }}>Scroll me plz</Text>
-          </ScrollView>
+        <View style={styles.c_c_scrollView}>
+          <ScrollView keyboardShouldPersistTaps="always">{contact}</ScrollView>
         </View>
       </View>
     )
@@ -316,27 +313,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'lightgrey',
     flexDirection: 'column',
-    justifyContent: 'space-between'
+    justifyContent: 'space-around'
   },
-  input: {
-    backgroundColor: 'green',
-    flex: 0.3,
+  c_r_input: {
+    backgroundColor: 'white',
+    flex: 0.25,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center'
   },
-  button: {
-    backgroundColor: 'yellow',
+  c_r_button: {
+    backgroundColor: '#fff',
     flex: 0.15,
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    alignItems: 'center'
   },
-  scrollView: {
-    backgroundColor: 'orange',
-    flex: 0.45
-    // borderTopWidth: 10,
-    // borderTopColor: 'grey'
-    // marginBottom:50
+  c_c_scrollView: {
+    backgroundColor: '#fff',
+    flex: 0.55
   },
   input_text: {
     flex: 0.6,
@@ -344,22 +339,27 @@ const styles = StyleSheet.create({
   },
   input_photo: {
     flex: 0.3,
-    justifyContent: 'center'
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'lightgrey'
   },
   input_textStyle: {
     color: 'black',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    borderWidth: 2,
+    borderColor: 'lightgrey'
+  },
+  input_textStyle_last: {
+    borderTopWidth: 0
   },
   input_imageStyle: {
-    maxWidth: 100,
-    height: 80,
+    width: 101,
+    height: 100,
     borderColor: 'black',
     borderWidth: 1 / PixelRatio.get(),
     backgroundColor: '#fff'
   },
   button_add: {
-    zIndex: 11,
-    right: 10,
     backgroundColor: '#3fdbac',
     width: 50,
     height: 50,
@@ -369,8 +369,6 @@ const styles = StyleSheet.create({
     elevation: 8
   },
   button_del: {
-    zIndex: 11,
-    left: 10,
     backgroundColor: 'red',
     width: 50,
     height: 50,
@@ -380,11 +378,10 @@ const styles = StyleSheet.create({
     elevation: 8
   },
   button_bdcast: {
-    zIndex: 11,
     backgroundColor: 'skyblue',
-    // width:60,
+    width: 100,
     height: 50,
-    // borderRadius:50,
+    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 8
