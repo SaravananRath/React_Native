@@ -247,10 +247,10 @@ export default class Main extends React.Component {
 
     return (
       <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <View style={styles.textContainer}>
+        <View style={styles.input}>
+          <View style={styles.input_text}>
             <TextInput
-              style={styles.textInput}
+              style={styles.input_textStyle}
               onChangeText={name => this.setState({ name })}
               value={this.state.name}
               placeholder="Contact Name"
@@ -260,7 +260,7 @@ export default class Main extends React.Component {
 
             <TextInput
               keyboardType="numeric"
-              style={styles.textInput}
+              style={styles.input_textStyle}
               onChangeText={number => this.setState({ number })}
               value={this.state.number}
               placeholder="Contact Number"
@@ -270,38 +270,42 @@ export default class Main extends React.Component {
             />
           </View>
 
-          <View style={styles.photoContainer}>
+          <View style={styles.input_photo}>
             <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
               {this.state.image === null ? (
                 <Text>Select a Photo</Text>
               ) : (
-                <Image style={styles.imageInput} source={this.state.image} />
+                <Image
+                  style={styles.input_imageStyle}
+                  source={this.state.image}
+                />
               )}
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.buttonContainer}>
-          {/* <TouchableOpacity style={styles.addButton} onPress={this.addContact}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.broadButton}
-          onPress={() => this.props.navigation.navigate('Broadcast')}
-        >
-          <Text style={styles.broadButtonText}>Broadcast</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.delButton} onPress={this.clearStorage}>
-          <Text style={styles.delButtonText}>Del</Text>
-        </TouchableOpacity> */}
+        <View style={styles.button}>
+          <TouchableOpacity
+            style={styles.button_del}
+            onPress={this.clearStorage}
+          >
+            <Text style={styles.delButtonText}>Del</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button_bdcast}
+            onPress={() => this.props.navigation.navigate('Broadcast')}
+          >
+            <Text style={styles.broadButtonText}>Broadcast</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button_add} onPress={this.addContact}>
+            <Text style={styles.addButtonText}>+</Text>
+          </TouchableOpacity>
         </View>
-        <ScrollView
-          style={styles.scrollContainer}
-          keyboardShouldPersistTaps="always"
-        >
-          {contact}
-        </ScrollView>
+        <View style={styles.scrollView}>
+          <ScrollView keyboardShouldPersistTaps="always">
+            <Text style={{ fontSize: 100 }}>Scroll me plz</Text>
+            <Text style={{ fontSize: 100 }}>Scroll me plz</Text>
+          </ScrollView>
+        </View>
       </View>
     )
   }
@@ -310,107 +314,97 @@ export default class Main extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'skyblue'
+    backgroundColor: 'lightgrey',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
-  inputContainer: {
+  input: {
+    backgroundColor: 'green',
     flex: 0.3,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center'
   },
-  textContainer: {
+  button: {
+    backgroundColor: 'yellow',
+    flex: 0.15,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  scrollView: {
+    backgroundColor: 'orange',
+    flex: 0.45
+    // borderTopWidth: 10,
+    // borderTopColor: 'grey'
+    // marginBottom:50
+  },
+  input_text: {
     flex: 0.6,
     backgroundColor: 'green'
   },
-  photoContainer: {
+  input_photo: {
     flex: 0.3,
-    backgroundColor: 'yellow',
     justifyContent: 'center'
   },
-  textInput: {
-    // alignSelf: 'stretch',
-    // margin:5,
+  input_textStyle: {
     color: 'black',
-    // padding: 15,
     backgroundColor: '#fff'
-    // borderBottomWidth: 5,
-    // borderBottomColor: 'black'
   },
-  imageInput: {
-    // alignSelf: 'center',
-    width: 100,
+  input_imageStyle: {
+    maxWidth: 100,
     height: 80,
     borderColor: 'black',
     borderWidth: 1 / PixelRatio.get(),
     backgroundColor: '#fff'
   },
-  buttonContainer: {
-    flex: 0.15,
-    flexDirection: 'row',
-    backgroundColor: 'red'
+  button_add: {
+    zIndex: 11,
+    right: 10,
+    backgroundColor: '#3fdbac',
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8
   },
-  scrollContainer: {
-    flex: 0.5,
-    borderTopWidth: 10,
-    borderTopColor: 'lightgrey'
-    // marginBottom:50
+  button_del: {
+    zIndex: 11,
+    left: 10,
+    backgroundColor: 'red',
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8
+  },
+  button_bdcast: {
+    zIndex: 11,
+    backgroundColor: 'skyblue',
+    // width:60,
+    height: 50,
+    // borderRadius:50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8
+  },
+  button_bdcastText: {
+    color: '#fff',
+    fontSize: 15,
+    padding: 5
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 30
+  },
+
+  addPhotoText: {
+    color: '#fff',
+    fontSize: 10
+  },
+  delButtonText: {
+    color: '#fff',
+    fontSize: 15
   }
-
-  // addButton: {
-  //   position: 'absolute',
-  //   zIndex: 11,
-  //   right: 10,
-  //   bottom: 290,
-  //   backgroundColor: '#3fdbac',
-  //   width: 60,
-  //   height: 60,
-  //   borderRadius: 50,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   elevation: 8
-  // },
-  // delButton: {
-  //   position: 'absolute',
-  //   zIndex: 11,
-  //   left: 10,
-  //   bottom: 290,
-  //   backgroundColor: 'red',
-  //   width: 60,
-  //   height: 60,
-  //   borderRadius: 50,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   elevation: 8
-  // },
-  // broadButton: {
-  //   position: 'absolute',
-  //   zIndex: 11,
-  //   left: 130,
-  //   bottom: 290,
-  //   backgroundColor: 'skyblue',
-  //   // width:60,
-  //   height: 60,
-  //   // borderRadius:50,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  //   elevation: 8
-  // },
-  // broadButtonText: {
-  //   color: '#fff',
-  //   fontSize: 15,
-  //   padding: 5
-  // },
-  // addButtonText: {
-  //   color: '#fff',
-  //   fontSize: 30
-  // },
-
-  // addPhotoText: {
-  //   color: '#fff',
-  //   fontSize: 10
-  // },
-  // delButtonText: {
-  //   color: '#fff',
-  //   fontSize: 15
-  // },
 })
